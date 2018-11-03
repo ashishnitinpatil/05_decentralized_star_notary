@@ -17,6 +17,36 @@ contract StarNotary is ERC721 {
     mapping(bytes32 => bool) public starExists;
 
     /**
+    * @dev Private function to generate a starHash given it's coordinates
+    * @param _dec string The Star's declination
+    * @param _mag string The Star's magnitude
+    * @param _cent string The Star's Cent
+    * @return starHash
+    */
+    function getStarHash(string _dec, string _mag, string _cent)
+        private
+        pure
+        returns (bytes32)
+    {
+        return keccak256(abi.encodePacked(_dec, _mag, _cent));
+    }
+
+    /**
+    * @dev Public view function to check if a star exists given it's coordinates
+    * @param _dec string The Star's declination
+    * @param _mag string The Star's magnitude
+    * @param _cent string The Star's Cent
+    * @return bool
+    */
+    function checkIfStarExist(string _dec, string _mag, string _cent)
+        public
+        view
+        returns (bool)
+    {
+        return starExists[getStarHash(_dec, _mag, _cent)];
+    }
+
+    /**
     * @dev Public function to create & register a Star
     * @param _name string optional The Star's name
     * @param _dec string The Star's declination
@@ -35,12 +65,11 @@ contract StarNotary is ERC721 {
                 bytes(_cent).length != 0 &&
                 _tokenId != 0);
 
-        //check if tokenId already exists
+        // check if tokenId already exists
         require(bytes(tokenIdToStarInfo[_tokenId].dec).length == 0);
 
-        bytes32 starHash = keccak256(abi.encodePacked(_dec, _mag, _cent));
-        //check if star is already taken
-        require(!starExists[starHash]);
+        // star should not be already taken
+        require(!checkIfStarExist(_dec, _mag, _cent));
 
         // create in-memory star from input params
         Star memory newStar = Star(_name, _dec, _mag, _cent, _story);
@@ -48,7 +77,7 @@ contract StarNotary is ERC721 {
         // save star in mapping for easy details access via tokenId
         tokenIdToStarInfo[_tokenId] = newStar;
         // mark star as taken
-        starExists[starHash] = true;
+        starExists[getStarHash(_dec, _mag, _cent)] = true;
 
         // mint ERC721 token for caller
         _mint(msg.sender, _tokenId);

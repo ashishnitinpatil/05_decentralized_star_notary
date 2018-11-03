@@ -7,20 +7,20 @@ function errorIsRevert(error) {
 
 
 contract('StarNotary', accounts => {
-    let s = {
+    const s = {
         name: 'awesome star!',
         dec: '121.874',
         mag: '245.978',
         cent: '32.155',
         story: 'wonderful discovery!',
     }
+    const tokenId = 1
 
     beforeEach(async function() {
         this.contract = await StarNotary.new({from: accounts[0]})
     })
 
     describe('star creation', () => {
-        const tokenId = 1
 
         it('can create a star with all args', async function () {
             await this.contract.createStar(s.name, s.dec, s.mag, s.cent, s.story, tokenId, {from: accounts[0]})
@@ -30,6 +30,15 @@ contract('StarNotary', accounts => {
             assert.equal(sStar[2], s.mag)
             assert.equal(sStar[3], s.cent)
             assert.equal(sStar[4], s.story)
+        })
+        describe('checkIfStarExist', () => {
+            it('returns true for a star that exists', async function () {
+                await this.contract.createStar(s.name, s.dec, s.mag, s.cent, s.story, 1, {from: accounts[0]})
+                assert(this.contract.checkIfStarExist(s.dec, s.mag, s.cent))
+            })
+            it('returns false for a star that does not exist', async function () {
+                assert(this.contract.checkIfStarExist('should', 'not', 'exist'))
+            })
         })
         it('can create a star with only required args', async function () {
             await this.contract.createStar('', s.dec, s.mag, s.cent, '', tokenId, {from: accounts[0]})
