@@ -125,4 +125,36 @@ contract('StarNotary', accounts => {
             })
         })
     })
+
+    describe('minting', () => {
+        it('can mint token', async function () {
+            await this.contract.mint(1, {from: accounts[0]})
+            assert.equal(await this.contract.ownerOf(1), accounts[0])
+        })
+
+        describe('duplicate', () => {
+            const mintId = 10
+            const mintFrom = accounts[1]
+            const mintDupeFrom = accounts[2]
+            beforeEach(async function () {
+                await this.contract.mint(mintId, {from: mintFrom})
+            })
+            it('cant mint already minted tokenId', async function () {
+                try {
+                    await this.contract.mint(mintId, {from: mintDupeFrom})
+                } catch(error) {
+                    assert(errorIsRevert(error))
+                }
+                assert.equal(await this.contract.ownerOf(mintId), mintFrom)
+            })
+        })
+    })
+
+    describe('ownerOf', () => {
+        it('createStar assigns correct owner', async function () {
+            const owner = accounts[0]
+            await this.contract.createStar(s.name, s.dec, s.mag, s.cent, s.story, tokenId, {from: owner})
+            assert.equal(await this.contract.ownerOf(1), owner)
+        })
+    })
 })

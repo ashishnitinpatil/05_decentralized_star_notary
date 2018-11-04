@@ -12,7 +12,7 @@ contract StarNotary is ERC721 {
         string story;
     }
 
-    mapping(uint256 => Star) public tokenIdToStarInfo;
+    mapping(uint256 => Star) public tokenIdStarMapping;
     mapping(uint256 => uint256) public starsForSale;
     mapping(bytes32 => bool) public starExists;
 
@@ -66,7 +66,7 @@ contract StarNotary is ERC721 {
                 _tokenId != 0);
 
         // check if tokenId already exists
-        require(bytes(tokenIdToStarInfo[_tokenId].dec).length == 0);
+        require(bytes(tokenIdStarMapping[_tokenId].dec).length == 0);
 
         // star should not be already taken
         require(!checkIfStarExist(_dec, _mag, _cent));
@@ -75,7 +75,7 @@ contract StarNotary is ERC721 {
         Star memory newStar = Star(_name, _dec, _mag, _cent, _story);
 
         // save star in mapping for easy details access via tokenId
-        tokenIdToStarInfo[_tokenId] = newStar;
+        tokenIdStarMapping[_tokenId] = newStar;
         // mark star as taken
         starExists[getStarHash(_dec, _mag, _cent)] = true;
 
@@ -109,5 +109,23 @@ contract StarNotary is ERC721 {
         if(msg.value > starCost) {
             msg.sender.transfer(msg.value - starCost);
         }
+    }
+
+    function tokenIdToStarInfo(uint256 _tokenId)
+        public
+        view
+        returns(string, string, string, string, string)
+    {
+        return (tokenIdStarMapping[_tokenId].name,
+                tokenIdStarMapping[_tokenId].dec,
+                tokenIdStarMapping[_tokenId].mag,
+                tokenIdStarMapping[_tokenId].cent,
+                tokenIdStarMapping[_tokenId].story);
+    }
+
+    function mint(uint256 _tokenId)
+        public
+    {
+        _mint(msg.sender, _tokenId);
     }
 }

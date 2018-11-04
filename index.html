@@ -53,9 +53,13 @@
 
             if(typeof web3 != 'undefined') {
                 web3 = new Web3(web3.currentProvider) // what Metamask injected
+                console.log('Using metamask')
             } else {
                 // Instantiate and set Ganache as your provider
-                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
+                web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/36014bb8d6f7423d91d411769c3b9b07"))
+                console.log('Using rinkeby')
+                // web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
+                // console.log('Using ganache')
             }
 
             // The default (top) wallet account from a list of test accounts
@@ -518,7 +522,7 @@
                 ]
             )
             // Grab the contract at specified deployed address with the interface defined by the ABI
-            var starNotary = StarNotary.at('0x1443c5a007100827ef52e0fedeea9016c3df429f')
+            var starNotary = StarNotary.at('0xbf0433Ef737636dfCB3721B8D92ecE88d1Dd9258')
 
             // log all contract events
             // var events = starNotary.allEvents(null, function(error, log) {
@@ -526,6 +530,10 @@
             //         console.log(log)
             // })
 
+            // clears the status message shown to user
+            function clearStatus() {
+                document.getElementById('status').innerText = ''
+            }
             // updates status message shown to user
             function updateStatus(status) {
                 document.getElementById('status').innerText = status
@@ -533,6 +541,7 @@
 
             // Enable claim button being clicked
             function claimButtonClicked() {
+                clearStatus()
                 const name = document.getElementById('star-name').value
                 const dec = document.getElementById('star-dec').value
                 const mag = document.getElementById('star-mag').value
@@ -556,6 +565,7 @@
                                                           function(error, result) {
                         if (!error) {
                             console.log(result)
+                            updateStatus('Transaction sent!')
                             const transferEvent = starNotary.Transfer()
                             transferEvent.watch(function(error, result) {
                                 if (!error) {
@@ -575,6 +585,7 @@
 
             // Enable query button being clicked
             function queryButtonClicked() {
+                clearStatus()
                 const tokenId = parseInt(document.getElementById('query-token-id').value) || 0
 
                 if (!tokenId) {
