@@ -5,8 +5,9 @@ Project #5 of Udacity Blockchain Developer Nanodegree (ND1309)
 
 ## Summary
 
-- Contract address: 0x451194ce50f09258069dc921b6cf06ce8944d208
-- Contract tx: 0x5c91d84d807807e89265638db1542c278e9c366589f94aa608c6bd60a89bd6d2
+- Contract address: [0x912562408975a79cf5adaf37f155da5eb568e9c8](https://rinkeby.etherscan.io/address/0x912562408975a79cf5adaf37f155da5eb568e9c8)
+- Contract creation tx: [0x51f54839d61fb7b675fdf536baec438b480642330ccb3641bab9cfc090eae099](https://rinkeby.etherscan.io/tx/0x51f54839d61fb7b675fdf536baec438b480642330ccb3641bab9cfc090eae099)
+- Created Star's tokenId: 2
 
 
 ## Prerequisites
@@ -28,4 +29,13 @@ Start the ganache-cli server & then run
 
 ```
 truffle test
+```
+
+
+## Deploying
+
+Use truffle for deployment (migration) to local / rinkeby network
+
+```
+truffle migrate [--reset] [--compile-all] --network development[|rinkeby]
 ```

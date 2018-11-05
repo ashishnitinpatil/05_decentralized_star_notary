@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import 'openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
+import '../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
 
 contract StarNotary is ERC721 {
 
@@ -80,7 +80,7 @@ contract StarNotary is ERC721 {
         starExists[getStarHash(_dec, _mag, _cent)] = true;
 
         // mint ERC721 token for caller
-        _mint(msg.sender, _tokenId);
+        super._mint(msg.sender, _tokenId);
     }
 
     function putStarUpForSale(uint256 _tokenId, uint256 _price)
@@ -114,7 +114,7 @@ contract StarNotary is ERC721 {
     function tokenIdToStarInfo(uint256 _tokenId)
         public
         view
-        returns(string, string, string, string, string)
+        returns (string, string, string, string, string)
     {
         return (tokenIdStarMapping[_tokenId].name,
                 tokenIdStarMapping[_tokenId].dec,
@@ -126,6 +126,6 @@ contract StarNotary is ERC721 {
     function mint(uint256 _tokenId)
         public
     {
-        _mint(msg.sender, _tokenId);
+        super._mint(msg.sender, _tokenId);
     }
 }
